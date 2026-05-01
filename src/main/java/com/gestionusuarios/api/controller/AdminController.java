@@ -15,9 +15,10 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.gestionusuarios.api.util.ApiConstants;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping(ApiConstants.V1 + "/admin/users")
 public class AdminController {
 
     @Autowired

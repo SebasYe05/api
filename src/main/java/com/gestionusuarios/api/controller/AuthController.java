@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.gestionusuarios.api.util.ApiConstants;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(ApiConstants.V1 + "/auth")
 public class AuthController {
 
     @Autowired
