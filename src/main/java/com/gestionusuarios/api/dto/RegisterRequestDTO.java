@@ -20,6 +20,9 @@ public class RegisterRequestDTO {
     private String pass;
 
     @NotBlank
+    private String confirmPassword;
+
+    @NotBlank
     @Email
     private String email;
     

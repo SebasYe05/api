@@ -9,5 +9,9 @@ import com.gestionusuarios.api.dto.RegisterResponseDTO;
 public interface IAuthService {
 
     RegisterResponseDTO registerUser(RegisterRequestDTO registerRequest);
+
+    RegisterResponseDTO registerAdmin(RegisterRequestDTO registerRequest);
+
     LoginResponseDTO loginUser(LoginRequestDTO loginRequest);
+
 }

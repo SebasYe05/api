@@ -24,82 +24,126 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthServiceImpl implements IAuthService {
 
-    @Autowired
-    private CuentaRepository cuentaRepository;
+        @Autowired
+        private CuentaRepository cuentaRepository;
 
-    @Autowired
-    private PerfilRepository perfilRepository;
+        @Autowired
+        private PerfilRepository perfilRepository;
 
-    @Autowired
-    private JwtService jwtService;
+        @Autowired
+        private JwtService jwtService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    @Transactional
-    @Override
-    public RegisterResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+         @Transactional
+         @Override
+         public RegisterResponseDTO registerUser(RegisterRequestDTO registerRequest) {
 
-        if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
-            throw new UsuarioException("El nombre de usuario ya está registrado");
+                 if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
+                         throw new UsuarioException("Las contraseñas no coinciden");
+                 }
+
+                 if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
+                         throw new UsuarioException("El nombre de usuario ya está registrado");
+                 }
+
+                ObjectId id = new ObjectId();
+
+                // Construimos la entidad Cuenta con el Builder
+                Cuenta cuenta = Cuenta.builder()
+                                .id(id)
+                                .nombreUsuario(registerRequest.getNameUser())
+                                .contrasena(passwordEncoder.encode(registerRequest.getPass()))
+                                .rol(Rol.ROLE_USER)
+                                .build();
+
+                // Construimos la entidad Perfil con el Builder
+                Perfil perfil = Perfil.builder()
+                                .id(id)
+                                .nombres(registerRequest.getName())
+                                .apellidos(registerRequest.getLastName())
+                                .correo(registerRequest.getEmail())
+                                .telefono(registerRequest.getTel())
+                                .build();
+
+                perfilRepository.save(perfil);
+                cuentaRepository.save(cuenta);
+
+                // Construimos la respuesta con el Builder, incluyendo la fecha actual
+                return RegisterResponseDTO.builder()
+                                .mensaje("Usuario registrado exitosamente")
+                                .fechaRegistro(java.time.LocalDateTime.now())
+                                .build();
         }
 
-        ObjectId id = new ObjectId();
+         @Override
+         public RegisterResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
 
-        // Construimos la entidad Cuenta con el Builder
-        Cuenta cuenta = Cuenta.builder()
-                .id(id)
-                .nombreUsuario(registerRequest.getNameUser())
-                .contrasena(passwordEncoder.encode(registerRequest.getPass()))
-                .rol(Rol.ROLE_USER)
-                .build();
+                 if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
+                         throw new UsuarioException("Las contraseñas no coinciden");
+                 }
 
-        // Construimos la entidad Perfil con el Builder
-        Perfil perfil = Perfil.builder()
-                .id(id)
-                .nombres(registerRequest.getName())
-                .apellidos(registerRequest.getLastName())
-                .correo(registerRequest.getEmail())
-                .telefono(registerRequest.getTel())
-                .build();
+                 if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
+                         throw new UsuarioException("El nombre de usuario ya está registrado");
+                 }
 
-        perfilRepository.save(perfil);
-        cuentaRepository.save(cuenta);
+                ObjectId id = new ObjectId();
 
-        // Construimos la respuesta con el Builder, incluyendo la fecha actual
-        return RegisterResponseDTO.builder()
-                .mensaje("Usuario registrado exitosamente")
-                .fechaRegistro(java.time.LocalDateTime.now())
-                .build();
-    }
+                // Construimos la entidad Cuenta con el Builder
+                Cuenta cuenta = Cuenta.builder()
+                                .id(id)
+                                .nombreUsuario(registerRequest.getNameUser())
+                                .contrasena(passwordEncoder.encode(registerRequest.getPass()))
+                                .rol(Rol.ROLE_ADMIN)
+                                .build();
 
-    @Override
-    public LoginResponseDTO loginUser(LoginRequestDTO loginRequest) {
+                // Construimos la entidad Perfil con el Builder
+                Perfil perfil = Perfil.builder()
+                                .id(id)
+                                .nombres(registerRequest.getName())
+                                .apellidos(registerRequest.getLastName())
+                                .correo(registerRequest.getEmail())
+                                .telefono(registerRequest.getTel())
+                                .build();
 
-        Cuenta cuenta = cuentaRepository.findByNombreUsuario(loginRequest.getNameUser())
-                .orElseThrow(() -> new UsuarioException("Usuario no encontrado"));
+                perfilRepository.save(perfil);
+                cuentaRepository.save(cuenta);
 
-        if (!passwordEncoder.matches(loginRequest.getPass(), cuenta.getContrasena())) {
-            throw new UsuarioException("Contraseña incorrecta");
+                // Construimos la respuesta con el Builder, incluyendo la fecha actual
+                return RegisterResponseDTO.builder()
+                                .mensaje("Administrador registrado exitosamente")
+                                .fechaRegistro(java.time.LocalDateTime.now())
+                                .build();
         }
 
-        Perfil perfil = perfilRepository.findById(cuenta.getId())
-                .orElseThrow(() -> new UsuarioException("Perfil no encontrado"));
+        @Override
+        public LoginResponseDTO loginUser(LoginRequestDTO loginRequest) {
 
-        Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("rol", cuenta.getRol());
+                Cuenta cuenta = cuentaRepository.findByNombreUsuario(loginRequest.getNameUser())
+                                .orElseThrow(() -> new UsuarioException("Usuario no encontrado"));
 
-        String token = jwtService.generateToken(extraClaims, cuenta.getNombreUsuario());
+                if (!passwordEncoder.matches(loginRequest.getPass(), cuenta.getContrasena())) {
+                        throw new UsuarioException("Contraseña incorrecta");
+                }
 
-        return LoginResponseDTO.builder()
-                .token(token)
-                .userName(cuenta.getNombreUsuario())
-                .names(perfil.getNombres())
-                .lastNames(perfil.getApellidos())
-                .email(perfil.getCorreo())
-                .tel(perfil.getTelefono())
-                .role(cuenta.getRol().name())
-                .mensaje("Login exitoso")
-                .build();
-    }
+                Perfil perfil = perfilRepository.findById(cuenta.getId())
+                                .orElseThrow(() -> new UsuarioException("Perfil no encontrado"));
+
+                Map<String, Object> extraClaims = new HashMap<>();
+                extraClaims.put("rol", cuenta.getRol());
+
+                String token = jwtService.generateToken(extraClaims, cuenta.getNombreUsuario());
+
+                return LoginResponseDTO.builder()
+                                .token(token)
+                                .userName(cuenta.getNombreUsuario())
+                                .names(perfil.getNombres())
+                                .lastNames(perfil.getApellidos())
+                                .email(perfil.getCorreo())
+                                .tel(perfil.getTelefono())
+                                .role(cuenta.getRol().name())
+                                .mensaje("Login exitoso")
+                                .build();
+        }
 }

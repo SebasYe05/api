@@ -3,6 +3,7 @@ package com.gestionusuarios.api.exception;
 import com.gestionusuarios.api.dto.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,7 +17,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Manejo de excepción personalizada 
+    // 1. Manejo de excepción personalizada
     @ExceptionHandler(UsuarioException.class)
     public ResponseEntity<ErrorResponseDTO> handleUsuarioException(UsuarioException ex) {
         ErrorResponseDTO error = ErrorResponseDTO.builder()
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler {
                 .fechaError(LocalDateTime.now())
                 .codigoStatus(HttpStatus.BAD_REQUEST.value())
                 .build();
-        
+
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -69,5 +70,19 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.FORBIDDEN.value());
+        body.put("error", "Access Denied");
+        String message = ex.getMessage();
+        if (message == null || message.isEmpty()) {
+            message = "Access is denied";
+        }
+        body.put("message", message);
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
     }
 }
