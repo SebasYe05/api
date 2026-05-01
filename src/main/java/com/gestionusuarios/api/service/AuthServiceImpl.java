@@ -89,7 +89,6 @@ public class AuthServiceImpl implements IAuthService {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("rol", cuenta.getRol());
 
-        // Ahora puedes usar directamente el String del nombre de usuario
         String token = jwtService.generateToken(extraClaims, cuenta.getNombreUsuario());
 
         return LoginResponseDTO.builder()

@@ -11,7 +11,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
    
-    @Mapping(target = "id", source = "perfil.id")
     @Mapping(target = "names", source = "perfil.nombres")
     @Mapping(target = "lastNames", source = "perfil.apellidos")
     @Mapping(target = "email", source = "perfil.correo")
