@@ -1,16 +1,18 @@
 package com.gestionusuarios.api.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class LoginResponseDTO {
 
     private String token;
-    private String id;
-    private String nombres;
-    private String apellidos;
+    private String names;
+    private String lastNames;
     private String email;
-    private String telefono;
-    private String nombreUsuario;
-    private String rol;
+    private String tel;
+    private String userName;
+    private String role;
+    private String mensaje;
 }

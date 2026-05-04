@@ -1,14 +1,14 @@
 package com.gestionusuarios.api.repository;
 
+import java.util.Optional;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import com.gestionusuarios.api.model.Perfil;
 
-import java.util.Optional;
-
 @Repository
-public interface PerfilRepository extends MongoRepository<Perfil, String> {
-
-    Optional<Perfil> findByCuentaId(String cuentaId);
+public interface PerfilRepository extends MongoRepository<Perfil, ObjectId> {
+    Optional<Perfil> findById(ObjectId id);
 }
