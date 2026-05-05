@@ -17,8 +17,6 @@ import lombok.Data;
 public class Perfil {
     @Id
     private ObjectId id;
-    private String nombres;
-    private String apellidos;
-    private String correo;
-    private String telefono;
+    private String nombresCompletos;
+    private String biografia;
 }

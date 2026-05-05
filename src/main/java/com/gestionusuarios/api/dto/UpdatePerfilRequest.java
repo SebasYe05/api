@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class RegisterRequestDTO {
+public class UpdatePerfilRequest {
 
     @NotBlank
     private String nameUser;
@@ -13,9 +13,11 @@ public class RegisterRequestDTO {
     private String fullName;
 
     @NotBlank
+    private String bio;
+
+    @NotBlank
     private String pass;
 
     @NotBlank
     private String confirmPassword;
-
 }

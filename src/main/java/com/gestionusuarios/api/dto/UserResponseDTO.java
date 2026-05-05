@@ -8,9 +8,7 @@ import lombok.Data;
 public class UserResponseDTO {
     private String id;
     private String nameUser;
-    private String name;
-    private String lastName;
-    private String email;
-    private String tel;
+    private String fullName;
+    private String bio;
     private String rol;
 }

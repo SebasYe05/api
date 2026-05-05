@@ -12,14 +12,12 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
 
-    @Mapping(target = "names", source = "perfil.nombres")
-    @Mapping(target = "lastNames", source = "perfil.apellidos")
-    @Mapping(target = "email", source = "perfil.correo")
-    @Mapping(target = "tel", source = "perfil.telefono")
     @Mapping(target = "userName", source = "cuenta.nombreUsuario")
+    @Mapping(target = "nombreCompleto", source = "perfil.nombresCompletos")
     @Mapping(target = "role", source = "cuenta.rol")
     @Mapping(target = "token", ignore = true)
     @Mapping(target = "mensaje", ignore = true)
+    @Mapping(target = "bio", source = "perfil.biografia")
     LoginResponseDTO toDto(Perfil perfil, Cuenta cuenta);
 
     @Mapping(target = "id", ignore = true)
@@ -29,18 +27,14 @@ public interface UsuarioMapper {
     Cuenta toCuenta(RegisterRequestDTO registerRequest);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "nombres", source = "registerRequest.name")
-    @Mapping(target = "apellidos", source = "registerRequest.lastName")
-    @Mapping(target = "correo", source = "registerRequest.email")
-    @Mapping(target = "telefono", source = "registerRequest.tel")
+    @Mapping(target = "nombresCompletos", source = "registerRequest.fullName")
+    @Mapping(target = "biografia", ignore = true)
     Perfil toPerfil(RegisterRequestDTO registerRequest);
 
     @Mapping(target = "id", expression = "java(perfil.getId().toString())")
     @Mapping(target = "nameUser", source = "cuenta.nombreUsuario")
-    @Mapping(target = "name", source = "perfil.nombres")
-    @Mapping(target = "lastName", source = "perfil.apellidos")
-    @Mapping(target = "email", source = "perfil.correo")
-    @Mapping(target = "tel", source = "perfil.telefono")
+    @Mapping(target = "fullName", source = "perfil.nombresCompletos")
+    @Mapping(target = "bio", source = "perfil.biografia")
     @Mapping(target = "rol", expression = "java(cuenta.getRol() != null ? cuenta.getRol().name() : \"\")")
     UserResponseDTO toUserResponseDTO(Perfil perfil, Cuenta cuenta);
 

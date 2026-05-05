@@ -2,6 +2,7 @@ package com.gestionusuarios.api.service;
 
 import com.gestionusuarios.api.dto.RegisterRequestDTO;
 import com.gestionusuarios.api.dto.RegisterResponseDTO;
+import com.gestionusuarios.api.dto.UpdatePerfilRequest;
 import com.gestionusuarios.api.dto.UserResponseDTO;
 import com.gestionusuarios.api.exception.UsuarioException;
 import com.gestionusuarios.api.mapper.UsuarioMapper;
@@ -58,10 +59,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return UserResponseDTO.builder()
                 .id(perfil.getId().toString())
                 .nameUser(cuenta.getNombreUsuario())
-                .name(perfil.getNombres())
-                .lastName(perfil.getApellidos())
-                .email(perfil.getCorreo())
-                .tel(perfil.getTelefono())
+                .fullName(perfil.getNombresCompletos())
+                .bio(perfil.getBiografia())
                 .rol(cuenta.getRol().name())
                 .build();
     }
@@ -83,10 +82,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
         Perfil perfil = Perfil.builder()
                 .id(id)
-                .nombres(request.getName())
-                .apellidos(request.getLastName())
-                .correo(request.getEmail())
-                .telefono(request.getTel())
+                .nombresCompletos(request.getFullName())
                 .build();
 
         perfilRepository.save(perfil);
@@ -100,7 +96,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Transactional
     @Override
-    public UserResponseDTO updateUser(ObjectId id, RegisterRequestDTO request) {
+    public UserResponseDTO updateUser(ObjectId id, UpdatePerfilRequest request) {
         Cuenta cuenta = cuentaRepository.findById(id)
                 .orElseThrow(() -> new UsuarioException("Cuenta no encontrada"));
         Perfil perfil = perfilRepository.findById(id)
@@ -111,10 +107,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
             cuenta.setContrasena(passwordEncoder.encode(request.getPass()));
         }
 
-        perfil.setNombres(request.getName());
-        perfil.setApellidos(request.getLastName());
-        perfil.setCorreo(request.getEmail());
-        perfil.setTelefono(request.getTel());
+        perfil.setNombresCompletos(request.getFullName());
+        perfil.setBiografia(request.getBio());
 
         cuentaRepository.save(cuenta);
         perfilRepository.save(perfil);
@@ -122,10 +116,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
         return UserResponseDTO.builder()
                 .id(id.toString())
                 .nameUser(cuenta.getNombreUsuario())
-                .name(perfil.getNombres())
-                .lastName(perfil.getApellidos())
-                .email(perfil.getCorreo())
-                .tel(perfil.getTelefono())
+                .fullName(perfil.getNombresCompletos())
+                .bio(perfil.getBiografia())
                 .rol(cuenta.getRol().name())
                 .build();
     }

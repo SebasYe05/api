@@ -36,17 +36,17 @@ public class AuthServiceImpl implements IAuthService {
         @Autowired
         private PasswordEncoder passwordEncoder;
 
-         @Transactional
-         @Override
-         public RegisterResponseDTO registerUser(RegisterRequestDTO registerRequest) {
+        @Transactional
+        @Override
+        public RegisterResponseDTO registerUser(RegisterRequestDTO registerRequest) {
 
-                 if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
-                         throw new UsuarioException("Las contraseñas no coinciden");
-                 }
+                if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
+                        throw new UsuarioException("Las contraseñas no coinciden");
+                }
 
-                 if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
-                         throw new UsuarioException("El nombre de usuario ya está registrado");
-                 }
+                if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
+                        throw new UsuarioException("El nombre de usuario ya está registrado");
+                }
 
                 ObjectId id = new ObjectId();
 
@@ -61,10 +61,8 @@ public class AuthServiceImpl implements IAuthService {
                 // Construimos la entidad Perfil con el Builder
                 Perfil perfil = Perfil.builder()
                                 .id(id)
-                                .nombres(registerRequest.getName())
-                                .apellidos(registerRequest.getLastName())
-                                .correo(registerRequest.getEmail())
-                                .telefono(registerRequest.getTel())
+                                .nombresCompletos(registerRequest.getFullName())
+                                .biografia("")
                                 .build();
 
                 perfilRepository.save(perfil);
@@ -77,16 +75,16 @@ public class AuthServiceImpl implements IAuthService {
                                 .build();
         }
 
-         @Override
-         public RegisterResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
+        @Override
+        public RegisterResponseDTO registerAdmin(RegisterRequestDTO registerRequest) {
 
-                 if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
-                         throw new UsuarioException("Las contraseñas no coinciden");
-                 }
+                if (!registerRequest.getPass().equals(registerRequest.getConfirmPassword())) {
+                        throw new UsuarioException("Las contraseñas no coinciden");
+                }
 
-                 if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
-                         throw new UsuarioException("El nombre de usuario ya está registrado");
-                 }
+                if (cuentaRepository.existsByNombreUsuario(registerRequest.getNameUser())) {
+                        throw new UsuarioException("El nombre de usuario ya está registrado");
+                }
 
                 ObjectId id = new ObjectId();
 
@@ -101,10 +99,8 @@ public class AuthServiceImpl implements IAuthService {
                 // Construimos la entidad Perfil con el Builder
                 Perfil perfil = Perfil.builder()
                                 .id(id)
-                                .nombres(registerRequest.getName())
-                                .apellidos(registerRequest.getLastName())
-                                .correo(registerRequest.getEmail())
-                                .telefono(registerRequest.getTel())
+                                .nombresCompletos(registerRequest.getFullName())
+                                .biografia("")
                                 .build();
 
                 perfilRepository.save(perfil);
@@ -138,10 +134,8 @@ public class AuthServiceImpl implements IAuthService {
                 return LoginResponseDTO.builder()
                                 .token(token)
                                 .userName(cuenta.getNombreUsuario())
-                                .names(perfil.getNombres())
-                                .lastNames(perfil.getApellidos())
-                                .email(perfil.getCorreo())
-                                .tel(perfil.getTelefono())
+                                .nombreCompleto(perfil.getNombresCompletos())
+                                .bio(perfil.getBiografia())
                                 .role(cuenta.getRol().name())
                                 .mensaje("Login exitoso")
                                 .build();

@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import com.gestionusuarios.api.dto.RegisterRequestDTO;
 import com.gestionusuarios.api.dto.RegisterResponseDTO;
+import com.gestionusuarios.api.dto.UpdatePerfilRequest;
 import com.gestionusuarios.api.dto.UserResponseDTO;
 
 public interface IUsuarioService {
@@ -16,7 +17,7 @@ public interface IUsuarioService {
 
     RegisterResponseDTO createUser(RegisterRequestDTO request);
 
-    UserResponseDTO updateUser(ObjectId id, RegisterRequestDTO request);
+    UserResponseDTO updateUser(ObjectId id, UpdatePerfilRequest request);
 
     void deleteUser(ObjectId id);
 }

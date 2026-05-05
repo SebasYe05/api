@@ -2,6 +2,7 @@ package com.gestionusuarios.api.controller;
 
 import com.gestionusuarios.api.dto.RegisterRequestDTO;
 import com.gestionusuarios.api.dto.RegisterResponseDTO;
+import com.gestionusuarios.api.dto.UpdatePerfilRequest;
 import com.gestionusuarios.api.dto.UserResponseDTO; 
 import com.gestionusuarios.api.service.IUsuarioService;
 import org.bson.types.ObjectId;
@@ -40,7 +41,7 @@ public class UserAdminController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable String id, @RequestBody UpdatePerfilRequest request) {
         UserResponseDTO response = usuarioService.updateUser(new ObjectId(id), request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
